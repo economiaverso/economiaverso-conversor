@@ -1,56 +1,93 @@
-const express = require('express');
-const crypto = require('crypto');
-const path = require('path');
+const express = require("express");
+const crypto = require("crypto");
+const path = require("path");
 
 const app = express();
+
+app.use(express.json({ limit: "1mb" }));
+app.use(express.urlencoded({ extended: true }));
+
 const PORT = process.env.PORT || 10000;
 
 const SHOPEE_APP_ID = process.env.SHOPEE_APP_ID;
 const SHOPEE_SECRET = process.env.SHOPEE_SECRET;
-const SHOPEE_ENDPOINT = 'https://open-api.affiliate.shopee.com.br/graphql';
 
-// Opcional: proteja o conversor com um PIN simples.
-// Se SITE_ACCESS_CODE ficar vazio, o site funciona sem PIN.
-const SITE_ACCESS_CODE = process.env.SITE_ACCESS_CODE || '';
+const SHOPEE_ENDPOINT =
+  "https://open-api.affiliate.shopee.com.br/graphql";
 
-app.disable('x-powered-by');
-app.use(express.json({ limit: '64kb' }));
-app.use(express.urlencoded({ extended: false }));
-app.use(express.static(path.join(__dirname, 'public')));
 
-function isShopeeUrl(value = '') {
+// ======================================================
+// UTILIDADES
+// ======================================================
+
+function ehShopee(url = "") {
   try {
-    const u = new URL(value);
-    const h = u.hostname.toLowerCase();
+    const host = new URL(url).hostname.toLowerCase();
+
     return (
-      h === 'shopee.com.br' || h.endsWith('.shopee.com.br') ||
-      h === 'shopee.com' || h.endsWith('.shopee.com') ||
-      h === 'shope.ee' || h.endsWith('.shope.ee') ||
-      h === 's.shopee.com.br' || h.endsWith('.s.shopee.com.br')
+      host === "shopee.com.br" ||
+      host.endsWith(".shopee.com.br") ||
+      host === "shopee.com" ||
+      host.endsWith(".shopee.com") ||
+      host === "shope.ee" ||
+      host.endsWith(".shope.ee") ||
+      host === "s.shopee.com.br" ||
+      host.endsWith(".s.shopee.com.br")
     );
   } catch {
     return false;
   }
 }
 
-function makeSignature(timestamp, payload) {
-  const raw = `${SHOPEE_APP_ID}${timestamp}${payload}${SHOPEE_SECRET}`;
-  return crypto.createHash('sha256').update(raw, 'utf8').digest('hex');
+
+async function resolverUrl(url) {
+  try {
+    const resposta = await fetch(url, {
+      method: "GET",
+      redirect: "follow",
+      headers: {
+        "User-Agent": "Mozilla/5.0"
+      }
+    });
+
+    return resposta.url || url;
+  } catch {
+    return url;
+  }
 }
 
-async function generateAffiliateLink(originUrl, subId = 'site') {
-  if (!SHOPEE_APP_ID || !SHOPEE_SECRET) {
-    throw new Error('Credenciais da Shopee não configuradas no servidor.');
-  }
 
-  const safeSubId = String(subId || 'site').replace(/[^a-zA-Z0-9_-]/g, '').slice(0, 32) || 'site';
+function assinaturaShopee(timestamp, payload) {
+  const base =
+    String(SHOPEE_APP_ID) +
+    String(timestamp) +
+    payload +
+    String(SHOPEE_SECRET);
+
+  return crypto
+    .createHash("sha256")
+    .update(base, "utf8")
+    .digest("hex");
+}
+
+
+// ======================================================
+// SHOPEE AFFILIATE API
+// ======================================================
+
+async function gerarLinkShopee(originUrl) {
+  if (!SHOPEE_APP_ID || !SHOPEE_SECRET) {
+    throw new Error(
+      "SHOPEE_APP_ID ou SHOPEE_SECRET não configurado no Render."
+    );
+  }
 
   const query = `
     mutation {
       generateShortLink(
         input: {
           originUrl: ${JSON.stringify(originUrl)}
-          subIds: ["${safeSubId}", "economiaverso"]
+          subIds: ["economiaverso"]
         }
       ) {
         shortLink
@@ -59,87 +96,169 @@ async function generateAffiliateLink(originUrl, subId = 'site') {
   `;
 
   const payload = JSON.stringify({ query });
+
   const timestamp = Math.floor(Date.now() / 1000);
-  const signature = makeSignature(timestamp, payload);
-  const authorization = `SHA256 Credential=${SHOPEE_APP_ID}, Timestamp=${timestamp}, Signature=${signature}`;
 
-  const response = await fetch(SHOPEE_ENDPOINT, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: authorization
-    },
-    body: payload
-  });
+  const signature =
+    assinaturaShopee(timestamp, payload);
 
-  const data = await response.json().catch(() => ({}));
+  const authorization =
+    `SHA256 Credential=${SHOPEE_APP_ID}, ` +
+    `Timestamp=${timestamp}, ` +
+    `Signature=${signature}`;
 
-  if (!response.ok) {
-    throw new Error(`Shopee HTTP ${response.status}: ${JSON.stringify(data)}`);
+  const resposta = await fetch(
+    SHOPEE_ENDPOINT,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: authorization
+      },
+      body: payload
+    }
+  );
+
+  let dados;
+
+  try {
+    dados = await resposta.json();
+  } catch {
+    throw new Error(
+      `A Shopee respondeu HTTP ${resposta.status}, mas não retornou JSON válido.`
+    );
   }
 
-  if (Array.isArray(data.errors) && data.errors.length) {
-    throw new Error(data.errors.map(e => e.message || JSON.stringify(e)).join(' | '));
+  if (!resposta.ok) {
+    throw new Error(
+      `Shopee HTTP ${resposta.status}: ${JSON.stringify(dados)}`
+    );
   }
 
-  const shortLink = data?.data?.generateShortLink?.shortLink;
+  if (dados.errors?.length) {
+    throw new Error(
+      `Shopee GraphQL: ${JSON.stringify(dados.errors)}`
+    );
+  }
+
+  const shortLink =
+    dados?.data?.generateShortLink?.shortLink;
+
   if (!shortLink) {
-    throw new Error('A Shopee não retornou o link convertido.');
+    throw new Error(
+      "A Shopee não retornou o shortLink."
+    );
   }
 
   return shortLink;
 }
 
-function checkAccess(req) {
-  if (!SITE_ACCESS_CODE) return true;
-  const code = String(req.headers['x-access-code'] || req.body?.accessCode || '');
-  return crypto.timingSafeEqual(
-    Buffer.from(code.padEnd(SITE_ACCESS_CODE.length).slice(0, SITE_ACCESS_CODE.length)),
-    Buffer.from(SITE_ACCESS_CODE)
-  );
+
+async function converterShopee(urlOriginal) {
+  try {
+    return await gerarLinkShopee(urlOriginal);
+  } catch (primeiroErro) {
+    const resolvida =
+      await resolverUrl(urlOriginal);
+
+    if (!resolvida || resolvida === urlOriginal) {
+      throw primeiroErro;
+    }
+
+    return gerarLinkShopee(resolvida);
+  }
 }
 
-app.get('/api/status', (req, res) => {
-  res.json({
-    ok: Boolean(SHOPEE_APP_ID && SHOPEE_SECRET),
-    shopeeConfigured: Boolean(SHOPEE_APP_ID && SHOPEE_SECRET),
-    protected: Boolean(SITE_ACCESS_CODE)
-  });
-});
 
-app.post('/api/convert', async (req, res) => {
+// ======================================================
+// API DO SITE
+// ======================================================
+
+app.post("/api/convert", async (req, res) => {
   try {
-    if (!checkAccess(req)) {
-      return res.status(401).json({ ok: false, error: 'Código de acesso inválido.' });
-    }
-
-    const url = String(req.body?.url || '').trim();
-    const subId = String(req.body?.subId || 'site').trim();
+    const url =
+      String(req.body?.url || "").trim();
 
     if (!url) {
-      return res.status(400).json({ ok: false, error: 'Cole um link da Shopee.' });
+      return res.status(400).json({
+        ok: false,
+        erro: "Cole um link da Shopee."
+      });
     }
 
-    if (!isShopeeUrl(url)) {
-      return res.status(400).json({ ok: false, error: 'Esse link não parece ser da Shopee.' });
+    if (!ehShopee(url)) {
+      return res.status(400).json({
+        ok: false,
+        erro: "Esse link não parece ser da Shopee."
+      });
     }
 
-    const affiliate = await generateAffiliateLink(url, subId);
-    return res.json({ ok: true, original: url, affiliate });
-  } catch (error) {
-    console.error('Erro ao converter:', error.message);
-    return res.status(500).json({ ok: false, error: 'Não foi possível converter agora.', detail: error.message });
+    const afiliado =
+      await converterShopee(url);
+
+    return res.json({
+      ok: true,
+      original: url,
+      afiliado
+    });
+
+  } catch (erro) {
+    console.error("Erro /api/convert:", erro);
+
+    return res.status(500).json({
+      ok: false,
+      erro:
+        erro.message ||
+        "Não foi possível converter o link."
+    });
   }
 });
 
-app.get('/health', (req, res) => {
-  res.json({ ok: true, service: 'economiaverso-conversor' });
+
+app.get("/api/status", (req, res) => {
+  res.json({
+    ok:
+      !!SHOPEE_APP_ID &&
+      !!SHOPEE_SECRET,
+    app_id_configurado:
+      !!SHOPEE_APP_ID,
+    secret_configurado:
+      !!SHOPEE_SECRET
+  });
 });
 
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+
+// ======================================================
+// SITE
+// ======================================================
+
+app.use(
+  express.static(
+    path.join(__dirname, "public")
+  )
+);
+
+app.get("*", (req, res) => {
+  res.sendFile(
+    path.join(
+      __dirname,
+      "public",
+      "index.html"
+    )
+  );
 });
 
-app.listen(PORT, '0.0.0.0', () => {
-  console.log(`Economiaverso Conversor online na porta ${PORT}`);
-});
+
+// ======================================================
+// SERVIDOR
+// ======================================================
+
+app.listen(
+  PORT,
+  "0.0.0.0",
+  () => {
+    console.log(
+      `Economiaverso Conversor online na porta ${PORT}`
+    );
+  }
+);
