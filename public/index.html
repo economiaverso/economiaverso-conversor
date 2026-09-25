@@ -1,754 +1,423 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1, viewport-fit=cover"
-  >
-
-  <meta
-    name="theme-color"
-    content="#ee4d2d"
-  >
-
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Economiaverso | Conversor Shopee</title>
+  <meta name="theme-color" content="#0b5f6b" />
 
   <style>
     * {
       box-sizing: border-box;
-    }
-
-    :root {
-      --shopee: #ee4d2d;
-      --shopee-dark: #d83f22;
-      --text: #161616;
-      --muted: #727272;
-      --line: #e9e9e9;
-      --surface: #ffffff;
-      --background: #f5f6f8;
-    }
-
-    html,
-    body {
       margin: 0;
-      min-height: 100%;
-      font-family:
-        Inter,
-        -apple-system,
-        BlinkMacSystemFont,
-        "Segoe UI",
-        Arial,
-        sans-serif;
-      background: var(--background);
-      color: var(--text);
+      padding: 0;
+      font-family: Arial, Helvetica, sans-serif;
     }
 
     body {
       min-height: 100vh;
+      background:
+        radial-gradient(circle at top, rgba(28, 165, 170, 0.25), transparent 35%),
+        linear-gradient(180deg, #032f36 0%, #0b5f6b 55%, #063b44 100%);
+      color: #ffffff;
+      display: flex;
+      flex-direction: column;
     }
 
     .topbar {
       width: 100%;
-      height: 72px;
-      background: var(--surface);
-      border-bottom: 1px solid var(--line);
+      padding: 16px 20px;
+      background: rgba(3, 35, 41, 0.55);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid rgba(255,255,255,0.08);
       display: flex;
-      align-items: center;
       justify-content: center;
-    }
-
-    .brand {
-      display: flex;
       align-items: center;
-      gap: 10px;
-      font-weight: 800;
-      font-size: 20px;
-      letter-spacing: -0.4px;
+      gap: 12px;
     }
 
-    .brand-mark {
-      width: 38px;
-      height: 38px;
-      border-radius: 12px;
-      display: grid;
-      place-items: center;
-      background: var(--shopee);
-      color: white;
-      font-size: 20px;
-      box-shadow:
-        0 8px 20px
-        rgba(238, 77, 45, 0.18);
+    .topbar img {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      object-fit: cover;
+      box-shadow: 0 0 0 2px rgba(255,255,255,0.15);
     }
 
-    main {
+    .topbar h2 {
+      font-size: 22px;
+      font-weight: bold;
+      letter-spacing: 0.4px;
+    }
+
+    .container {
       width: 100%;
-      padding: 56px 18px;
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 28px 16px 40px;
+      flex: 1;
     }
 
     .hero {
-      width: 100%;
-      max-width: 650px;
-      margin: 0 auto 24px;
       text-align: center;
+      margin-bottom: 24px;
     }
 
-    h1 {
-      margin: 0;
-      font-size: clamp(30px, 5vw, 44px);
-      line-height: 1.08;
-      letter-spacing: -1.4px;
+    .hero img {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-bottom: 16px;
+      box-shadow: 0 12px 35px rgba(0,0,0,0.35);
+      border: 3px solid rgba(255,255,255,0.12);
     }
 
-    .subtitle {
-      max-width: 520px;
-      margin: 14px auto 0;
-      color: var(--muted);
+    .hero h1 {
+      font-size: 34px;
+      margin-bottom: 10px;
+      color: #ffffff;
+    }
+
+    .hero p {
       font-size: 16px;
-      line-height: 1.55;
+      line-height: 1.5;
+      color: rgba(255,255,255,0.84);
+      max-width: 560px;
+      margin: 0 auto;
     }
 
     .card {
-      width: 100%;
-      max-width: 650px;
-      margin: 0 auto;
-      padding: 28px;
-      background: var(--surface);
-      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.96);
+      color: #16353b;
       border-radius: 22px;
-      box-shadow:
-        0 20px 60px
-        rgba(20, 20, 20, 0.06);
+      padding: 22px;
+      box-shadow: 0 18px 45px rgba(0,0,0,0.28);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .card h3 {
+      font-size: 22px;
+      margin-bottom: 8px;
+      color: #0b5f6b;
+    }
+
+    .card .subtext {
+      font-size: 15px;
+      margin-bottom: 18px;
+      color: #45666b;
+      line-height: 1.5;
     }
 
     label {
       display: block;
-      margin-bottom: 9px;
+      margin-bottom: 8px;
       font-size: 14px;
-      font-weight: 750;
+      font-weight: bold;
+      color: #0b5f6b;
     }
 
-    .input {
+    input[type="text"] {
       width: 100%;
-      height: 60px;
-      border: 1.5px solid #dddddd;
+      height: 56px;
+      border: 1px solid #c9d6d9;
       border-radius: 14px;
+      padding: 0 14px;
+      font-size: 15px;
       outline: none;
-      padding: 0 16px;
-      background: white;
-      color: var(--text);
-      font-size: 16px;
-      transition:
-        border-color .15s,
-        box-shadow .15s;
+      transition: 0.2s;
     }
 
-    .input:focus {
-      border-color: var(--shopee);
-      box-shadow:
-        0 0 0 4px
-        rgba(238, 77, 45, 0.09);
+    input[type="text"]:focus {
+      border-color: #17a2a5;
+      box-shadow: 0 0 0 4px rgba(23,162,165,0.12);
     }
 
-    .primary {
-      width: 100%;
-      height: 58px;
-      margin-top: 14px;
-      border: 0;
-      border-radius: 14px;
-      background: var(--shopee);
-      color: white;
-      font-size: 16px;
-      font-weight: 800;
+    button {
+      border: none;
       cursor: pointer;
-      transition:
-        transform .15s,
-        background .15s,
-        opacity .15s;
+      transition: 0.2s;
+      font-weight: bold;
     }
 
-    .primary:hover {
-      background: var(--shopee-dark);
+    .btn-primary {
+      width: 100%;
+      height: 56px;
+      margin-top: 14px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, #0b5f6b, #138a8f);
+      color: #fff;
+      font-size: 16px;
     }
 
-    .primary:active {
-      transform: scale(.99);
+    .btn-primary:hover {
+      filter: brightness(1.05);
     }
 
-    .primary:disabled {
-      opacity: .58;
+    .btn-primary:disabled {
+      opacity: 0.7;
       cursor: wait;
     }
 
     .error {
       display: none;
-      margin-top: 16px;
-      padding: 14px 15px;
-      border-radius: 12px;
-      background: #fff1ef;
+      margin-top: 14px;
+      background: #fff1f0;
       color: #b42318;
+      border: 1px solid #f2b8b5;
+      border-radius: 12px;
+      padding: 12px 14px;
       font-size: 14px;
-      line-height: 1.45;
-    }
-
-    .error.show {
-      display: block;
+      line-height: 1.4;
     }
 
     .result {
       display: none;
-      margin-top: 28px;
-      padding-top: 26px;
-      border-top: 1px solid var(--line);
+      margin-top: 24px;
+      padding-top: 20px;
+      border-top: 1px solid #dde7ea;
     }
 
-    .result.show {
-      display: block;
-      animation: fadeIn .2s ease;
-    }
-
-    @keyframes fadeIn {
-      from {
-        opacity: 0;
-        transform: translateY(4px);
-      }
-
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    .success {
-      display: flex;
+    .success-badge {
+      display: inline-flex;
       align-items: center;
-      gap: 9px;
-      margin-bottom: 12px;
-      color: #18794e;
+      gap: 8px;
+      background: #e8f8f3;
+      color: #087556;
+      border-radius: 999px;
+      padding: 8px 12px;
       font-size: 14px;
-      font-weight: 750;
+      font-weight: bold;
+      margin-bottom: 14px;
     }
 
-    .success-icon {
-      width: 24px;
-      height: 24px;
-      display: grid;
-      place-items: center;
-      background: #e8f7ef;
-      border-radius: 50%;
+    .result-title {
+      font-size: 15px;
+      margin-bottom: 8px;
+      color: #0b5f6b;
+      font-weight: bold;
     }
 
-    .link-box {
+    .result-box {
       width: 100%;
-      min-height: 60px;
-      padding: 16px;
-      display: flex;
-      align-items: center;
-      background: #f7f7f8;
-      border: 1px solid #e5e5e5;
+      background: #f6fbfb;
+      border: 1px solid #d3e4e6;
       border-radius: 14px;
-      color: #242424;
+      padding: 14px;
       font-size: 14px;
-      line-height: 1.45;
       word-break: break-all;
-      user-select: all;
+      color: #16353b;
+      line-height: 1.5;
     }
 
     .actions {
       display: grid;
-      grid-template-columns:
-        minmax(0, 1fr)
-        minmax(0, 1fr);
-      gap: 10px;
-      margin-top: 12px;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 14px;
     }
 
-    .action {
-      min-height: 52px;
-      border: 0;
-      border-radius: 13px;
+    .btn-copy {
+      height: 52px;
+      border-radius: 14px;
+      background: #083b45;
+      color: #fff;
       font-size: 15px;
-      font-weight: 750;
-      cursor: pointer;
-      transition:
-        transform .15s,
-        opacity .15s;
     }
 
-    .action:active {
-      transform: scale(.98);
+    .btn-open {
+      height: 52px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, #d8b05a, #f0d58d);
+      color: #18363c;
+      font-size: 15px;
     }
 
-    .copy {
-      background: #202124;
-      color: white;
+    .btn-copy:hover,
+    .btn-open:hover {
+      transform: translateY(-1px);
     }
 
-    .open {
-      background: var(--shopee);
-      color: white;
-    }
-
-    .footer-note {
-      margin-top: 18px;
+    .helper {
+      margin-top: 14px;
+      font-size: 13px;
+      color: #6b7e82;
       text-align: center;
-      color: #999;
-      font-size: 12px;
-      line-height: 1.45;
+      line-height: 1.5;
     }
 
-    @media (max-width: 540px) {
-      .topbar {
-        height: 64px;
-      }
+    footer {
+      text-align: center;
+      padding: 18px 16px 24px;
+      color: rgba(255,255,255,0.82);
+      font-size: 14px;
+      border-top: 1px solid rgba(255,255,255,0.08);
+      background: rgba(0,0,0,0.14);
+    }
 
-      main {
-        padding:
-          36px
-          12px
-          30px;
+    @media (max-width: 600px) {
+      .hero h1 {
+        font-size: 28px;
       }
 
       .card {
-        padding: 22px 16px;
-        border-radius: 20px;
-      }
-
-      .subtitle {
-        font-size: 15px;
+        padding: 18px;
       }
 
       .actions {
         grid-template-columns: 1fr;
       }
+
+      .topbar h2 {
+        font-size: 19px;
+      }
     }
   </style>
 </head>
-
 <body>
 
-  <header class="topbar">
-    <div class="brand">
-      <div class="brand-mark">S</div>
-      <span>Economiaverso</span>
+  <div class="topbar">
+    <img src="/economiaverso-logo.png" alt="Economiaverso" />
+    <h2>Economiaverso</h2>
+  </div>
+
+  <div class="container">
+    <div class="hero">
+      <img src="/economiaverso-logo.png" alt="Logo Economiaverso" />
+      <h1>Conversor Shopee</h1>
+      <p>Coloque seu link shopee aqui e gere seu link de afiliado do Economiaverso</p>
     </div>
-  </header>
 
-
-  <main>
-
-    <section class="hero">
-
-      <h1>
-        Conversor Shopee
-      </h1>
-
-      <p class="subtitle">
-        Cole qualquer link da Shopee e gere
-        automaticamente seu link de afiliado.
+    <div class="card">
+      <h3>Gerar link</h3>
+      <p class="subtext">
+        Cole abaixo qualquer link da Shopee para converter automaticamente no seu link de afiliado.
       </p>
 
-    </section>
-
-
-    <section class="card">
-
-      <label for="linkOriginal">
-        Link da Shopee
-      </label>
-
+      <label for="urlInput">Link da Shopee</label>
       <input
-        id="linkOriginal"
-        class="input"
         type="text"
-        inputmode="url"
-        placeholder="Cole o link aqui"
-        autocomplete="off"
-        autocapitalize="off"
-        spellcheck="false"
-      >
+        id="urlInput"
+        placeholder="Ex.: https://shopee.com.br/..."
+      />
 
+      <button class="btn-primary" id="convertBtn">Gerar meu link de afiliado</button>
 
-      <button
-        id="converter"
-        class="primary"
-        type="button"
-      >
-        Converter link
-      </button>
+      <div class="error" id="errorBox"></div>
 
+      <div class="result" id="resultBox">
+        <div class="success-badge">✅ Link gerado com sucesso</div>
 
-      <div
-        id="erro"
-        class="error"
-      ></div>
-
-
-      <section
-        id="resultado"
-        class="result"
-      >
-
-        <div class="success">
-
-          <span class="success-icon">
-            ✓
-          </span>
-
-          <span>
-            Link convertido com sucesso
-          </span>
-
-        </div>
-
-
-        <div
-          id="resultadoLink"
-          class="link-box"
-        ></div>
-
+        <div class="result-title">Seu link de afiliado:</div>
+        <div class="result-box" id="resultLink"></div>
 
         <div class="actions">
-
-          <button
-            id="copiar"
-            class="action copy"
-            type="button"
-          >
-            Copiar link
-          </button>
-
-
-          <button
-            id="abrir"
-            class="action open"
-            type="button"
-          >
-            Abrir na Shopee
-          </button>
-
+          <button class="btn-copy" id="copyBtn">Copiar link</button>
+          <button class="btn-open" id="openBtn">Abrir na Shopee</button>
         </div>
 
-      </section>
-
-
-      <div class="footer-note">
-        Seu AppID e Secret permanecem
-        protegidos no servidor.
+        <div class="helper">
+          Ao clicar em <strong>Abrir na Shopee</strong>, o sistema tenta abrir diretamente o link no app/navegador.
+        </div>
       </div>
+    </div>
+  </div>
 
-    </section>
-
-  </main>
-
+  <footer>
+    Economiaverso 2026 - Todos direitos reservados.
+  </footer>
 
   <script>
-    const campo =
-      document.getElementById(
-        "linkOriginal"
-      );
+    const urlInput = document.getElementById("urlInput");
+    const convertBtn = document.getElementById("convertBtn");
+    const errorBox = document.getElementById("errorBox");
+    const resultBox = document.getElementById("resultBox");
+    const resultLink = document.getElementById("resultLink");
+    const copyBtn = document.getElementById("copyBtn");
+    const openBtn = document.getElementById("openBtn");
 
-    const botaoConverter =
-      document.getElementById(
-        "converter"
-      );
+    let generatedLink = "";
 
-    const erro =
-      document.getElementById(
-        "erro"
-      );
-
-    const resultado =
-      document.getElementById(
-        "resultado"
-      );
-
-    const resultadoLink =
-      document.getElementById(
-        "resultadoLink"
-      );
-
-    const botaoCopiar =
-      document.getElementById(
-        "copiar"
-      );
-
-    const botaoAbrir =
-      document.getElementById(
-        "abrir"
-      );
-
-
-    let linkConvertido = "";
-
-
-    function mostrarErro(
-      mensagem
-    ) {
-      erro.textContent =
-        mensagem;
-
-      erro.classList.add(
-        "show"
-      );
+    function showError(message) {
+      errorBox.style.display = "block";
+      errorBox.textContent = message;
+      resultBox.style.display = "none";
     }
 
-
-    function esconderErro() {
-      erro.textContent = "";
-
-      erro.classList.remove(
-        "show"
-      );
+    function clearError() {
+      errorBox.style.display = "none";
+      errorBox.textContent = "";
     }
 
-
-    function extrairPrimeiraUrl(
-      texto
-    ) {
-      const match =
-        String(texto)
-          .match(
-            /https?:\/\/[^\s]+/i
-          );
-
-      return match
-        ? match[0]
-        : "";
+    function showResult(link) {
+      generatedLink = link;
+      resultLink.textContent = link;
+      resultBox.style.display = "block";
     }
 
+    convertBtn.addEventListener("click", async () => {
+      const url = urlInput.value.trim();
 
-    async function converter() {
-
-      esconderErro();
-
-      resultado.classList.remove(
-        "show"
-      );
-
-      linkConvertido = "";
-
-
-      const url =
-        extrairPrimeiraUrl(
-          campo.value
-        );
-
+      clearError();
+      resultBox.style.display = "none";
 
       if (!url) {
-        mostrarErro(
-          "Cole um link válido da Shopee."
-        );
-
+        showError("Cole um link da Shopee para converter.");
         return;
       }
 
-
-      botaoConverter.disabled =
-        true;
-
-      botaoConverter.textContent =
-        "Convertendo...";
-
+      convertBtn.disabled = true;
+      convertBtn.textContent = "Convertendo...";
 
       try {
-        const resposta =
-          await fetch(
-            "/api/convert",
-            {
-              method: "POST",
-
-              headers: {
-                "Content-Type":
-                  "application/json"
-              },
-
-              body:
-                JSON.stringify({
-                  url
-                })
-            }
-          );
-
-
-        let dados;
-
-        try {
-          dados =
-            await resposta.json();
-
-        } catch {
-          throw new Error(
-            "O servidor não retornou uma resposta válida."
-          );
-        }
-
-
-        if (
-          !resposta.ok ||
-          !dados.ok
-        ) {
-          throw new Error(
-            dados.erro ||
-            "Não foi possível converter o link."
-          );
-        }
-
-
-        if (!dados.afiliado) {
-          throw new Error(
-            "A Shopee não retornou o link de afiliado."
-          );
-        }
-
-
-        linkConvertido =
-          dados.afiliado;
-
-
-        resultadoLink.textContent =
-          linkConvertido;
-
-
-        resultado.classList.add(
-          "show"
-        );
-
-
-        resultado.scrollIntoView({
-          behavior: "smooth",
-          block: "nearest"
+        const response = await fetch("/api/convert", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ url })
         });
 
-      } catch (e) {
-        mostrarErro(
-          e.message ||
-          "Erro ao converter o link."
-        );
+        const data = await response.json();
 
+        if (!response.ok || !data.ok) {
+          showError(data.erro || "Não foi possível converter o link.");
+          return;
+        }
+
+        showResult(data.afiliado);
+      } catch (error) {
+        showError("Erro de conexão com o servidor.");
       } finally {
-        botaoConverter.disabled =
-          false;
-
-        botaoConverter.textContent =
-          "Converter link";
+        convertBtn.disabled = false;
+        convertBtn.textContent = "Gerar meu link de afiliado";
       }
-    }
+    });
 
+    copyBtn.addEventListener("click", async () => {
+      if (!generatedLink) return;
 
-    botaoConverter.addEventListener(
-      "click",
-      converter
-    );
-
-
-    campo.addEventListener(
-      "keydown",
-      evento => {
-        if (
-          evento.key ===
-          "Enter"
-        ) {
-          evento.preventDefault();
-          converter();
-        }
+      try {
+        await navigator.clipboard.writeText(generatedLink);
+        copyBtn.textContent = "Copiado!";
+        setTimeout(() => {
+          copyBtn.textContent = "Copiar link";
+        }, 1600);
+      } catch (e) {
+        alert("Não foi possível copiar automaticamente.");
       }
-    );
+    });
 
+    openBtn.addEventListener("click", () => {
+      if (!generatedLink) return;
+      window.location.href = generatedLink;
+    });
 
-    botaoCopiar.addEventListener(
-      "click",
-      async () => {
-        if (!linkConvertido) {
-          return;
-        }
-
-        try {
-          await navigator
-            .clipboard
-            .writeText(
-              linkConvertido
-            );
-
-          botaoCopiar.textContent =
-            "Copiado ✓";
-
-          setTimeout(
-            () => {
-              botaoCopiar.textContent =
-                "Copiar link";
-            },
-            1400
-          );
-
-        } catch {
-          const area =
-            document.createElement(
-              "textarea"
-            );
-
-          area.value =
-            linkConvertido;
-
-          area.style.position =
-            "fixed";
-
-          area.style.opacity =
-            "0";
-
-          document.body.appendChild(
-            area
-          );
-
-          area.select();
-
-          document.execCommand(
-            "copy"
-          );
-
-          area.remove();
-
-          botaoCopiar.textContent =
-            "Copiado ✓";
-
-          setTimeout(
-            () => {
-              botaoCopiar.textContent =
-                "Copiar link";
-            },
-            1400
-          );
-        }
+    urlInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        convertBtn.click();
       }
-    );
-
-
-    botaoAbrir.addEventListener(
-      "click",
-      () => {
-        if (!linkConvertido) {
-          return;
-        }
-
-        /*
-          Usamos o próprio link afiliado
-          s.shopee.com.br.
-
-          Em Android/iPhone, se o app da
-          Shopee estiver associado a esses
-          links, o sistema abre diretamente
-          o aplicativo.
-
-          Se não estiver, abre a Shopee
-          pelo navegador sem perder o
-          link de afiliado.
-        */
-
-        window.location.href =
-          linkConvertido;
-      }
-    );
+    });
   </script>
 
 </body>
