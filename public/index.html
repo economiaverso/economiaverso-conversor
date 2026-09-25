@@ -1,216 +1,675 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta name="theme-color" content="#ff5a1f" />
-  <meta name="description" content="Conversor de links Shopee do Economiaverso" />
-  <title>Economiaverso — Conversor Shopee</title>
+  <meta charset="UTF-8" />
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+  />
+
+  <title>Economiaverso - Conversor Shopee</title>
+
   <style>
-    :root {
-      --bg: #0d0f13;
-      --panel: #151922;
-      --panel-2: #1d2330;
-      --text: #f6f7fb;
-      --muted: #9ba4b4;
-      --brand: #ff5a1f;
-      --brand-2: #ff7a3d;
-      --ok: #35c77a;
-      --danger: #ff5c70;
-      --border: rgba(255,255,255,.08);
-      --shadow: 0 24px 70px rgba(0,0,0,.35);
+    * {
+      box-sizing: border-box;
     }
-    * { box-sizing: border-box; }
-    html, body { min-height: 100%; }
+
     body {
       margin: 0;
-      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      color: var(--text);
+      padding: 0;
+      font-family: Arial, Helvetica, sans-serif;
       background:
-        radial-gradient(circle at 10% 5%, rgba(255,90,31,.22), transparent 30%),
-        radial-gradient(circle at 95% 0%, rgba(255,122,61,.12), transparent 28%),
-        var(--bg);
+        linear-gradient(
+          135deg,
+          #ff5a00,
+          #ff7a00
+        );
+      min-height: 100vh;
+      color: #222;
     }
-    .wrap { width: min(940px, calc(100% - 30px)); margin: 0 auto; }
-    header { padding: 26px 0 8px; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
-    .brand { display: flex; align-items: center; gap: 12px; font-weight: 900; letter-spacing: -.03em; }
-    .mark { width: 42px; height: 42px; border-radius: 13px; display: grid; place-items: center; background: linear-gradient(135deg, var(--brand), var(--brand-2)); box-shadow: 0 10px 30px rgba(255,90,31,.28); font-size: 22px; }
-    .pill { border: 1px solid var(--border); background: rgba(255,255,255,.04); border-radius: 999px; padding: 8px 12px; color: var(--muted); font-size: 12px; }
-    main { padding: 48px 0 70px; }
-    .hero { text-align: center; max-width: 720px; margin: 0 auto 28px; }
-    h1 { font-size: clamp(36px, 7vw, 66px); line-height: .98; margin: 0; letter-spacing: -.055em; }
-    .accent { color: var(--brand-2); }
-    .subtitle { color: var(--muted); margin: 18px auto 0; max-width: 620px; font-size: 17px; line-height: 1.6; }
-    .card { background: linear-gradient(180deg, rgba(255,255,255,.045), rgba(255,255,255,.02)); border: 1px solid var(--border); border-radius: 24px; padding: 20px; box-shadow: var(--shadow); backdrop-filter: blur(16px); }
-    .field-label { display: flex; justify-content: space-between; align-items: center; margin: 0 2px 9px; gap: 8px; font-size: 13px; color: var(--muted); }
-    textarea, input { width: 100%; border: 1px solid var(--border); background: #10141c; color: var(--text); border-radius: 15px; padding: 16px; outline: none; font: inherit; transition: .2s ease; }
-    textarea { min-height: 108px; resize: vertical; }
-    textarea:focus, input:focus { border-color: rgba(255,122,61,.7); box-shadow: 0 0 0 4px rgba(255,90,31,.08); }
-    .row { display: grid; grid-template-columns: 1fr 180px; gap: 12px; margin-top: 12px; }
-    button { appearance: none; border: 0; border-radius: 15px; padding: 15px 18px; font: inherit; font-weight: 800; cursor: pointer; transition: transform .12s ease, opacity .2s ease; }
-    button:active { transform: scale(.985); }
-    .primary { background: linear-gradient(135deg, var(--brand), var(--brand-2)); color: white; box-shadow: 0 12px 30px rgba(255,90,31,.26); }
-    .secondary { background: var(--panel-2); color: var(--text); border: 1px solid var(--border); }
-    .primary:disabled { opacity: .55; cursor: wait; }
-    .result { display: none; margin-top: 18px; padding-top: 18px; border-top: 1px solid var(--border); }
-    .result.show { display: block; }
-    .result-box { display: flex; gap: 10px; align-items: stretch; }
-    .result-box input { flex: 1; color: var(--ok); font-weight: 700; }
-    .msg { min-height: 22px; margin-top: 12px; font-size: 13px; color: var(--muted); }
-    .msg.error { color: var(--danger); }
-    .msg.ok { color: var(--ok); }
-    .features { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-top: 18px; }
-    .feature { padding: 17px; border-radius: 18px; border: 1px solid var(--border); background: rgba(255,255,255,.025); }
-    .feature b { display: block; margin-bottom: 6px; }
-    .feature span { color: var(--muted); font-size: 13px; line-height: 1.45; }
-    footer { color: var(--muted); text-align: center; font-size: 12px; padding: 0 0 28px; }
-    .hidden { display: none !important; }
-    @media (max-width: 680px) {
-      main { padding-top: 34px; }
-      .row { grid-template-columns: 1fr; }
-      .features { grid-template-columns: 1fr; }
-      .result-box { flex-direction: column; }
-      header { align-items: flex-start; }
+
+    .pagina {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .card {
+      width: 100%;
+      max-width: 650px;
+      background: #ffffff;
+      border-radius: 24px;
+      padding: 32px;
+      box-shadow:
+        0 20px 60px rgba(0, 0, 0, 0.22);
+    }
+
+    .logo {
+      text-align: center;
+      font-size: 52px;
+      margin-bottom: 4px;
+    }
+
+    h1 {
+      text-align: center;
+      margin: 0;
+      font-size: 32px;
+    }
+
+    .subtitulo {
+      text-align: center;
+      color: #666;
+      margin-top: 10px;
+      margin-bottom: 30px;
+      line-height: 1.5;
+    }
+
+    label {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 8px;
+    }
+
+    textarea,
+    input {
+      width: 100%;
+      border: 2px solid #e7e7e7;
+      border-radius: 14px;
+      padding: 15px;
+      font-size: 16px;
+      outline: none;
+      background: #fafafa;
+      transition: 0.2s;
+    }
+
+    textarea {
+      min-height: 120px;
+      resize: vertical;
+    }
+
+    textarea:focus,
+    input:focus {
+      border-color: #ff5a00;
+      background: #fff;
+    }
+
+    .grupo {
+      margin-bottom: 20px;
+    }
+
+    button {
+      width: 100%;
+      border: none;
+      border-radius: 14px;
+      padding: 16px;
+      font-size: 17px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: transform 0.15s, opacity 0.15s;
+    }
+
+    button:active {
+      transform: scale(0.98);
+    }
+
+    button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    #converter {
+      background: #ff5a00;
+      color: white;
+      margin-top: 4px;
+    }
+
+    .resultado {
+      display: none;
+      margin-top: 28px;
+      padding-top: 26px;
+      border-top: 1px solid #eee;
+    }
+
+    .resultado.ativo {
+      display: block;
+    }
+
+    .sucesso {
+      background: #eaf9ee;
+      color: #167a38;
+      padding: 12px;
+      border-radius: 12px;
+      margin-bottom: 18px;
+      text-align: center;
+      font-weight: bold;
+    }
+
+    #resultadoLink {
+      background: #f5f5f5;
+      margin-bottom: 14px;
+    }
+
+    .acoes {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    #copiar {
+      background: #222;
+      color: white;
+    }
+
+    #abrirShopee {
+      background: #ee4d2d;
+      color: white;
+    }
+
+    .erro {
+      display: none;
+      background: #fff0f0;
+      color: #b00020;
+      padding: 14px;
+      border-radius: 12px;
+      margin-top: 18px;
+      line-height: 1.4;
+    }
+
+    .erro.ativo {
+      display: block;
+    }
+
+    .carregando {
+      opacity: 0.75;
+    }
+
+    .rodape {
+      text-align: center;
+      color: #888;
+      font-size: 13px;
+      margin-top: 28px;
+    }
+
+    @media (max-width: 520px) {
+      .pagina {
+        padding: 14px;
+        align-items: flex-start;
+      }
+
+      .card {
+        margin-top: 18px;
+        padding: 24px 18px;
+        border-radius: 20px;
+      }
+
+      h1 {
+        font-size: 27px;
+      }
+
+      .acoes {
+        grid-template-columns: 1fr;
+      }
+
+      button {
+        min-height: 54px;
+      }
     }
   </style>
 </head>
+
 <body>
-  <div class="wrap">
-    <header>
-      <div class="brand"><div class="mark">↗</div><div>ECONOMIAVERSO</div></div>
-      <div id="statusPill" class="pill">Verificando API…</div>
-    </header>
 
-    <main>
-      <section class="hero">
-        <h1>Converta links da <span class="accent">Shopee</span> em segundos.</h1>
-        <p class="subtitle">Cole um link de produto e receba seu link de afiliado do Economiaverso. Suas credenciais ficam somente no servidor.</p>
-      </section>
+  <div class="pagina">
 
-      <section class="card">
-        <div class="field-label"><span>Link da Shopee</span><span>shopee.com.br • shope.ee • s.shopee.com.br</span></div>
-        <textarea id="url" placeholder="Cole aqui o link da Shopee…" spellcheck="false"></textarea>
+    <main class="card">
 
-        <div id="accessWrap" class="hidden" style="margin-top:12px">
-          <div class="field-label"><span>Código de acesso</span><span>Proteção do conversor</span></div>
-          <input id="accessCode" type="password" placeholder="Digite o código" autocomplete="current-password" />
+      <div class="logo">🛍️</div>
+
+      <h1>Economiaverso</h1>
+
+      <div class="subtitulo">
+        Cole qualquer link da Shopee e transforme
+        automaticamente no seu link de afiliado.
+      </div>
+
+
+      <div class="grupo">
+
+        <label for="linkOriginal">
+          Link da Shopee
+        </label>
+
+        <textarea
+          id="linkOriginal"
+          placeholder="Cole aqui o link da Shopee..."
+          autocomplete="off"
+        ></textarea>
+
+      </div>
+
+
+      <div class="grupo">
+
+        <label for="subId">
+          Sub ID (opcional)
+        </label>
+
+        <input
+          id="subId"
+          type="text"
+          placeholder="Ex.: instagram, whatsapp, telegram"
+          autocomplete="off"
+        />
+
+      </div>
+
+
+      <button id="converter">
+        Converter link
+      </button>
+
+
+      <div
+        id="erro"
+        class="erro"
+      ></div>
+
+
+      <section
+        id="resultadoArea"
+        class="resultado"
+      >
+
+        <div class="sucesso">
+          ✅ Link convertido com sucesso
         </div>
 
-        <div class="row">
-          <input id="subId" maxlength="32" value="site" placeholder="Sub ID (opcional)" />
-          <button id="convertBtn" class="primary">Converter link</button>
+
+        <div class="grupo">
+
+          <label for="resultadoLink">
+            Seu link afiliado
+          </label>
+
+          <input
+            id="resultadoLink"
+            type="text"
+            readonly
+          />
+
         </div>
 
-        <div id="result" class="result">
-          <div class="field-label"><span>Seu link afiliado</span><span>Pronto para compartilhar</span></div>
-          <div class="result-box">
-            <input id="affiliate" readonly />
-            <button id="copyBtn" class="secondary">Copiar</button>
-          </div>
+
+        <div class="acoes">
+
+          <button id="copiar">
+            📋 Copiar
+          </button>
+
+          <button id="abrirShopee">
+            🛍️ Abrir na Shopee
+          </button>
+
         </div>
 
-        <div id="msg" class="msg"></div>
       </section>
 
-      <section class="features">
-        <div class="feature"><b>🔒 Seguro</b><span>AppID e Secret nunca aparecem no navegador.</span></div>
-        <div class="feature"><b>⚡ Rápido</b><span>Conversão feita diretamente pela API de afiliados da Shopee.</span></div>
-        <div class="feature"><b>📱 Mobile first</b><span>Funciona bem no celular para copiar e compartilhar rapidamente.</span></div>
-      </section>
+
+      <div class="rodape">
+        Economiaverso • Conversor Shopee
+      </div>
+
     </main>
 
-    <footer>Economiaverso • Conversor de links Shopee</footer>
   </div>
 
+
   <script>
-    const $ = id => document.getElementById(id);
-    const url = $('url');
-    const subId = $('subId');
-    const btn = $('convertBtn');
-    const result = $('result');
-    const affiliate = $('affiliate');
-    const msg = $('msg');
-    const copyBtn = $('copyBtn');
-    const statusPill = $('statusPill');
-    const accessWrap = $('accessWrap');
-    const accessCode = $('accessCode');
 
-    function setMsg(text, type='') {
-      msg.textContent = text;
-      msg.className = 'msg' + (type ? ' ' + type : '');
+    const linkOriginal =
+      document.getElementById(
+        "linkOriginal"
+      );
+
+    const subId =
+      document.getElementById(
+        "subId"
+      );
+
+    const converter =
+      document.getElementById(
+        "converter"
+      );
+
+    const resultadoArea =
+      document.getElementById(
+        "resultadoArea"
+      );
+
+    const resultadoLink =
+      document.getElementById(
+        "resultadoLink"
+      );
+
+    const copiar =
+      document.getElementById(
+        "copiar"
+      );
+
+    const abrirShopee =
+      document.getElementById(
+        "abrirShopee"
+      );
+
+    const erro =
+      document.getElementById(
+        "erro"
+      );
+
+
+    function mostrarErro(
+      mensagem
+    ) {
+
+      erro.textContent =
+        mensagem;
+
+      erro.classList.add(
+        "ativo"
+      );
+
     }
 
-    async function loadStatus() {
-      try {
-        const r = await fetch('/api/status');
-        const d = await r.json();
-        statusPill.textContent = d.ok ? 'API Shopee online' : 'API não configurada';
-        statusPill.style.color = d.ok ? 'var(--ok)' : 'var(--danger)';
-        if (d.protected) accessWrap.classList.remove('hidden');
-      } catch {
-        statusPill.textContent = 'Servidor indisponível';
-        statusPill.style.color = 'var(--danger)';
-      }
+
+    function esconderErro() {
+
+      erro.textContent = "";
+
+      erro.classList.remove(
+        "ativo"
+      );
+
     }
 
-    async function convert() {
-      const value = url.value.trim();
-      if (!value) {
-        setMsg('Cole um link da Shopee primeiro.', 'error');
-        url.focus();
-        return;
-      }
 
-      btn.disabled = true;
-      btn.textContent = 'Convertendo…';
-      result.classList.remove('show');
-      setMsg('Gerando seu link afiliado…');
+    function extrairPrimeiraUrl(
+      texto
+    ) {
 
-      try {
-        const r = await fetch('/api/convert', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            ...(accessCode.value ? {'x-access-code': accessCode.value} : {})
-          },
-          body: JSON.stringify({
-            url: value,
-            subId: subId.value.trim() || 'site',
-            accessCode: accessCode.value || undefined
-          })
-        });
+      const match =
+        String(texto)
+          .match(
+            /https?:\/\/[^\s]+/i
+          );
 
-        const d = await r.json();
-        if (!r.ok || !d.ok) throw new Error(d.error || 'Falha na conversão.');
-
-        affiliate.value = d.affiliate;
-        result.classList.add('show');
-        setMsg('Link convertido com sucesso.', 'ok');
-      } catch (e) {
-        setMsg(e.message || 'Não foi possível converter.', 'error');
-      } finally {
-        btn.disabled = false;
-        btn.textContent = 'Converter link';
-      }
+      return match
+        ? match[0]
+        : "";
     }
 
-    btn.addEventListener('click', convert);
-    url.addEventListener('keydown', e => {
-      if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') convert();
-    });
 
-    copyBtn.addEventListener('click', async () => {
-      try {
-        await navigator.clipboard.writeText(affiliate.value);
-        copyBtn.textContent = 'Copiado ✓';
-        setTimeout(() => copyBtn.textContent = 'Copiar', 1400);
-      } catch {
-        affiliate.select();
-        document.execCommand('copy');
+    converter.addEventListener(
+      "click",
+      async () => {
+
+        esconderErro();
+
+        resultadoArea
+          .classList.remove(
+            "ativo"
+          );
+
+
+        const url =
+          extrairPrimeiraUrl(
+            linkOriginal.value
+          );
+
+
+        if (!url) {
+
+          mostrarErro(
+            "Cole um link válido da Shopee."
+          );
+
+          return;
+        }
+
+
+        converter.disabled =
+          true;
+
+        converter.textContent =
+          "Convertendo...";
+
+        converter.classList.add(
+          "carregando"
+        );
+
+
+        try {
+
+          const resposta =
+            await fetch(
+              "/api/convert",
+              {
+                method: "POST",
+
+                headers: {
+                  "Content-Type":
+                    "application/json"
+                },
+
+                body:
+                  JSON.stringify({
+                    url:
+                      url,
+
+                    subId:
+                      subId.value.trim()
+                  })
+              }
+            );
+
+
+          const dados =
+            await resposta.json();
+
+
+          if (
+            !resposta.ok ||
+            !dados.ok
+          ) {
+
+            throw new Error(
+              dados.erro ||
+              dados.error ||
+              "Não foi possível converter o link."
+            );
+          }
+
+
+          const linkFinal =
+            dados.afiliado ||
+            dados.shortLink ||
+            dados.link ||
+            dados.url;
+
+
+          if (!linkFinal) {
+
+            throw new Error(
+              "A API não retornou o link convertido."
+            );
+          }
+
+
+          resultadoLink.value =
+            linkFinal;
+
+
+          resultadoArea
+            .classList.add(
+              "ativo"
+            );
+
+
+          resultadoArea
+            .scrollIntoView({
+              behavior:
+                "smooth",
+
+              block:
+                "center"
+            });
+
+
+        } catch (
+          e
+        ) {
+
+          mostrarErro(
+            e.message ||
+            "Erro ao converter."
+          );
+
+        } finally {
+
+          converter.disabled =
+            false;
+
+          converter.textContent =
+            "Converter link";
+
+          converter.classList.remove(
+            "carregando"
+          );
+
+        }
+
       }
-    });
+    );
 
-    loadStatus();
+
+    copiar.addEventListener(
+      "click",
+      async () => {
+
+        const link =
+          resultadoLink.value
+            .trim();
+
+
+        if (!link) {
+
+          return;
+        }
+
+
+        try {
+
+          await navigator
+            .clipboard
+            .writeText(
+              link
+            );
+
+
+          copiar.textContent =
+            "✅ Copiado";
+
+
+          setTimeout(
+            () => {
+
+              copiar.textContent =
+                "📋 Copiar";
+
+            },
+            1800
+          );
+
+
+        } catch {
+
+          resultadoLink.select();
+
+          document.execCommand(
+            "copy"
+          );
+
+        }
+
+      }
+    );
+
+
+    abrirShopee.addEventListener(
+      "click",
+      () => {
+
+        const link =
+          resultadoLink.value
+            .trim();
+
+
+        if (!link) {
+
+          mostrarErro(
+            "Converta um link primeiro."
+          );
+
+          return;
+        }
+
+
+        /*
+          O link afiliado s.shopee.com.br
+          utiliza os App Links/Universal Links
+          da Shopee.
+
+          Em Android/iPhone, se o app estiver
+          instalado e configurado para abrir
+          links da Shopee, o sistema deve abrir
+          o aplicativo.
+
+          Usamos a mesma aba para aumentar
+          a chance de o sistema entregar o link
+          ao aplicativo.
+        */
+
+        window.location.href =
+          link;
+
+      }
+    );
+
+
+    linkOriginal
+      .addEventListener(
+        "keydown",
+        event => {
+
+          if (
+            event.key ===
+              "Enter" &&
+            (
+              event.ctrlKey ||
+              event.metaKey
+            )
+          ) {
+
+            converter.click();
+
+          }
+
+        }
+      );
+
   </script>
+
 </body>
 </html>
